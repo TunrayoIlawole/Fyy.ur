@@ -70,7 +70,7 @@ def venues():
     venues = []
 
     for venue in filtered_venues:
-      # Get the number of shows associated with a particular venue provided that the show is starting sometime in the future i.e later than datetime.now()
+      # Get the number of shows associated with a particular venue, provided that the show is starting sometime in the future i.e later than datetime.now()
       num_upcoming_shows = len(db.session.query(Show).filter(Show.venue_id==venue.id).filter(Show.start_time > datetime.now()).all())
       venues.append({
         'id': venue.id,
@@ -183,7 +183,6 @@ def create_venue_submission():
 
     db.session.add(venue)
     db.session.commit()
-    print(venue)
 
   except:
     error = True
@@ -480,9 +479,9 @@ def create_show_submission():
 
   try:
     show = Show()
-    show.artist_id = request.form['artist_id'],
-    show.venue_id = request.form['venue_id'],
-    show.start_time = request.form['start_time']
+    show.artist_id = request.form.get('artist_id'),
+    show.venue_id = request.form.get('venue_id'),
+    show.start_time = request.form.get('start_time')
 
     db.session.add(show)
     db.session.commit()
