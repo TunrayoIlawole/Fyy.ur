@@ -89,6 +89,7 @@ def venues():
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
   search_term = request.form.get('search_term', '')
+  # Get all the results that match the search term
   search_results = db.session.query(Venue).filter(Venue.name.ilike(f'%{search_term}%')).all()
 
   data = []
@@ -111,9 +112,11 @@ def search_venues():
 def show_venue(venue_id):
   # shows the venue page with the given venue_id
 
+  # Get the venue with id - venue_id
   venue = Venue.query.get(venue_id)
 
   all_upcoming_shows = db.session.query(Show).join(Artist).filter(Show.venue_id==venue.id).filter(Show.start_time > datetime.now()).all()
+  # Get the number of shows associated with a particular venue, provided that the show has already occurred i.e earlier than datetime.now()
   all_past_shows = db.session.query(Show).join(Artist).filter(Show.venue_id==venue.id).filter(Show.start_time < datetime.now()).all()
 
   upcoming_shows = []
@@ -167,6 +170,8 @@ def create_venue_form():
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
   error = False
+
+  # Get the values from the form and store them in a new venue object
   try:
     venue = Venue()
     venue.name = request.form.get('name')
@@ -300,7 +305,7 @@ def edit_artist(artist_id):
   form = ArtistForm()
   artist = Artist.query.get(artist_id)
 
-  # If the artist exists
+  # If the artist exists, populate the form fields with data from the artist object
   if artist:
     form.name.data = artist.name
     form.city.data = artist.city
@@ -352,7 +357,7 @@ def edit_venue(venue_id):
 
   venue = Venue.query.get(venue_id)
 
-  # If the venue exists
+  # If the venue exists, populate the form fields with data from the venue object
   if venue:
     form.name.data = venue.name
     form.city.data = venue.city
